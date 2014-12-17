@@ -2,22 +2,15 @@ import json
 import os
 from flask import Blueprint
 from flask import Response
-from flask import request
 from flask.ext.cors import cross_origin
 from geobricks_spatial_query.utils.log import logger
 from geobricks_spatial_query.config.config import config
-from flask import request, send_from_directory
+from flask import request
 from geobricks_dbms.core.dbms_postgresql import DBMSPostgreSQL
 
 log = logger(__file__)
 
 app = Blueprint("spatial_query", "spatial_query")
-
-# TODO: How to map it to the download distribution URL? Get the one in the @app.route "/download/"
-#distribution_url = request.host_url + "distribution/download/"
-
-zip_filename = "layers"
-
 
 @app.route('/discovery/')
 @app.route('/discovery')
