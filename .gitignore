@@ -1,4 +1,4 @@
 /dist/
 *.iml
 *.*~
-/GeobricksDistribution.egg-info/
+/GeobricksSpatialQuery.egg-info/

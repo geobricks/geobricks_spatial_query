@@ -4,9 +4,8 @@ from flask import Blueprint
 from flask import Response
 from flask.ext.cors import cross_origin
 from geobricks_spatial_query.utils.log import logger
-from geobricks_spatial_query.config.config import config
+from geobricks_spatial_query.core.spatial_query_core import query_db
 from flask import request
-from geobricks_dbms.core.dbms_postgresql import DBMSPostgreSQL
 
 log = logger(__file__)
 
@@ -47,8 +46,7 @@ def query_db(datasource, query):
     # TODO it's not used the schema in the query.
     # it should be replaced if the query contains {{SCHEMA}} or something like that
     try:
-        spatial_db = DBMSPostgreSQL(config["settings"]["db"][datasource])
-        result = spatial_db.query(query)
+        result = query_db(datasource, query)
         return Response(json.dumps(result), content_type='application/json; charset=utf-8')
     except Exception, e:
         log.error(e)
