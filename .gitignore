@@ -1,0 +1,4 @@
+/dist/
+*.iml
+*.*~
+/GeobricksDistribution.egg-info/
