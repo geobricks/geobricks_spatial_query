@@ -14,7 +14,7 @@ app = Blueprint("spatial_query", "spatial_query")
 @app.route('/discovery/')
 @app.route('/discovery')
 @cross_origin(origins='*')
-def discovery():
+def rest_discovery():
     """
     Discovery service available for all Geobricks libraries that describes the plug-in.
     @return: Dictionary containing information about the service.
@@ -36,7 +36,7 @@ def discovery():
 @app.route('/db/<datasource>/<query>/', methods=['GET'])
 @app.route('/db/<datasource>/<query>', methods=['GET'])
 @cross_origin(origins='*', headers=['Content-Type'])
-def query_db(datasource, query):
+def rest_query_db(datasource, query):
     """
     Query the PostGIS with a custom query
     :param datasource: postgis/postgres datasource

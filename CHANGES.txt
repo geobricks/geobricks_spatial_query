@@ -1,2 +1,3 @@
 v0.0.1, 17-12-2014 -- Initial release.
 v0.0.2, 17-12-2014 -- Fixes.
+v0.0.3, 17-12-2014 -- Fix rest name.
