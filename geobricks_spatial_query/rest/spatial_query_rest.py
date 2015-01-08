@@ -31,9 +31,10 @@ def rest_discovery():
     @return: Dictionary containing information about the service.
     """
     out = {
-        'name': 'Spatial Query service',
+        'name': 'spatialquery',
+        'title': 'Spatial Query service',
         'description': 'Functionalities to handle spatial queries.',
-        'type': 'SERVICE'
+        'type': 'SERVICE',
     }
     return Response(simplejson.dumps(out), content_type='application/json; charset=utf-8')
 
