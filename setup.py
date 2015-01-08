@@ -12,6 +12,9 @@ setup(
     description='Geobricks library to handle spatial queries.',
     install_requires=[
         'flask',
+        'flask-cors'
+        'simplejson',
+        'Geobrickscommon'
         'GeobricksDBMS'
     ],
     url='http://pypi.python.org/pypi/GeobricksSpatialQuery/',

@@ -1,15 +1,26 @@
-import json
+import simplejson
 import os
 from flask import Blueprint
 from flask import Response
 from flask.ext.cors import cross_origin
-from geobricks_spatial_query.utils.log import logger
-from geobricks_spatial_query.core.spatial_query_core import query_db
+from geobricks_spatial_query.config.config import config
+from geobricks_common.core.log import logger
+from geobricks_spatial_query.core.spatial_query_core import SpatialQuery
 from flask import request
 
 log = logger(__file__)
 
-app = Blueprint("spatial_query", "spatial_query")
+app = Blueprint("spatialquery", "spatialquery")
+
+
+@app.route('/')
+@cross_origin(origins='*')
+def root():
+    """
+    Root REST service.
+    @return: Welcome message.
+    """
+    return 'Welcome to Geobricks SpatialQuery!'
 
 @app.route('/discovery/')
 @app.route('/discovery')
@@ -22,19 +33,13 @@ def rest_discovery():
     out = {
         'name': 'Spatial Query service',
         'description': 'Functionalities to handle spatial queries.',
-        'type': 'SPATIAL_QUERY'
+        'type': 'SERVICE'
     }
-    print "----"
-    print request.script_root
-    print request.path
-    print request.base_url
-    print request.url_root
-    print request.url
-    return Response(json.dumps(out), content_type='application/json; charset=utf-8')
+    return Response(simplejson.dumps(out), content_type='application/json; charset=utf-8')
 
 
-@app.route('/db/<datasource>/<query>/', methods=['GET'])
-@app.route('/db/<datasource>/<query>', methods=['GET'])
+@app.route('/db/<datasource>/query/<query>/', methods=['GET'])
+@app.route('/db/<datasource>/query/<query>', methods=['GET'])
 @cross_origin(origins='*', headers=['Content-Type'])
 def rest_query_db(datasource, query):
     """
@@ -46,8 +51,39 @@ def rest_query_db(datasource, query):
     # TODO it's not used the schema in the query.
     # it should be replaced if the query contains {{SCHEMA}} or something like that
     try:
-        result = query_db(datasource, query)
-        return Response(json.dumps(result), content_type='application/json; charset=utf-8')
+        sq = SpatialQuery(config)
+        result = sq.query_db(datasource, query)
+        return Response(simplejson.dumps(result), content_type='application/json; charset=utf-8')
     except Exception, e:
         log.error(e)
         raise Exception(e)
+
+
+@app.route('/db/<datasource>/bbox/layer/<layer_code>/<column_code>/<codes>/', methods=['GET'])
+@app.route('/db/<datasource>/bbox/layer/<layer_code>/<column_code>/<codes>', methods=['GET'])
+@cross_origin(origins='*', headers=['Content-Type'])
+def rest_query_bbox(datasource, layer_code, column_code, codes):
+    try:
+        sq = SpatialQuery(config)
+        codes = codes.split(",")
+        result = sq.query_bbox(datasource, layer_code, column_code, codes)
+        return Response(simplejson.dumps(result), content_type='application/json; charset=utf-8')
+    except Exception, e:
+        log.error(e)
+        raise Exception(e)
+
+
+@app.route('/db/<datasource>/bbox/layer/<layer_code>/<column_code>/<codes>/epsg/<epsg>/', methods=['GET'])
+@app.route('/db/<datasource>/bbox/layer/<layer_code>/<column_code>/<codes>/epsg/<epsg>', methods=['GET'])
+@cross_origin(origins='*', headers=['Content-Type'])
+def rest_query_bbox_epsg(datasource, layer_code, column_code, codes, epsg):
+    try:
+        sq = SpatialQuery(config)
+        codes = codes.split(",")
+        result = sq.query_bbox(datasource, layer_code, column_code, codes, epsg)
+        return Response(simplejson.dumps(result), content_type='application/json; charset=utf-8')
+    except Exception, e:
+        log.error(e)
+        raise Exception(e)
+
+
