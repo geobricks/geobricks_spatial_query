@@ -48,7 +48,7 @@ class SpatialQuery():
         query += "FROM " + table + " "
 
         # where
-        query += "WHERE " + column_code + " IN(" + codes + ")"
+        query += "WHERE " + column_code + " IN (" + codes + ")"
 
         db = DBMSPostgreSQL(db_datasource)
         log.info(query)
@@ -72,7 +72,7 @@ def get_layer(db_datasource, layer_code):
     if "tables" in db_datasource:
         if layer_code in db_datasource["tables"]:
             return db_datasource["tables"][layer_code]
-    log.warn("layer code no mapped, returning the passed layer_code:" + layer_code)
+    log.warn("layer code not mapped, returning the passed layer_code:" + layer_code)
     return layer_code
 
 
@@ -111,7 +111,7 @@ def get_layer_srid(layer):
 def parse_codes(codes, is_string=True):
     codes_string = ""
     for c in codes:
-        codes_string += "'"+c+"'," if is_string else c+","
+        codes_string += "'"+str(c)+"'," if is_string else str(c)+","
     return codes_string[:-1]
 
 
