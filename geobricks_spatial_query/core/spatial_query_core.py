@@ -10,6 +10,7 @@ class SpatialQuery():
 
     # default settings
     config = None
+    default_db = "spatial"
 
     def __init__(self, config):
         self.config = config["settings"]
@@ -24,7 +25,7 @@ class SpatialQuery():
         srid = self.query_db(datasource, "SELECT ST_SRID(" + geom_column + ") FROM " + table + " LIMIT 1")
         return str(srid[0][0])
 
-    def query_bbox(self, datasource, layer_code, column_code, codes, epsg="4326", output_geojson=True):
+    def query_bbox(self, datasource, layer_code, column_code, codes, epsg="4326", output_type="bbox"):
         db_datasource = get_db_datasource(self.config, datasource)
         layer = get_layer(db_datasource, layer_code)
         table = get_table(layer)
@@ -36,13 +37,13 @@ class SpatialQuery():
         # query
         query = "SELECT  "
         # add geojson
-        if output_geojson: query += " ST_AsGeoJSON( "
+        if output_type == "geojson" or output_type == "bbox": query += " ST_AsGeoJSON("
 
         # TODO: the transform is not always needed
         # add ST_Transform (in theory add if needed) and extent
         query += "ST_Transform(ST_SetSRID(ST_Extent(" + geom_column + "), " + srid + "), " + epsg + " ) "
 
-        if output_geojson: query += ") "
+        query += ") "
 
         # From
         query += "FROM " + table + " "
@@ -55,7 +56,43 @@ class SpatialQuery():
         result = db.query(query)
         log.info(result)
 
+        # different kind of result based on the request
+        if output_type == "geojson":
+            return result
+        else:
+            # TODO: fix the process to json
+            result = simplejson.dumps(result)
+            result = simplejson.loads(result)
+            result = simplejson.loads(result[0][0])
+            minlat = result["coordinates"][0][0][0]
+            minlon = result["coordinates"][0][1][1]
+            maxlat = result["coordinates"][0][2][0]
+            maxlon = result["coordinates"][0][0][1]
+            result = [[minlat, minlon], [maxlat, maxlon]]
         return result
+
+    def get_query_string_select_all(self, datasource, layer_code, column_code, codes, select="*"):
+        db_datasource = get_db_datasource(self.config, datasource)
+        layer = get_layer(db_datasource, layer_code)
+        table = get_table(layer)
+        column_code = get_layer_column(layer, column_code)
+        codes = parse_codes(codes)
+
+        # query
+        query = "SELECT  " + select + " "
+        # From
+        query += "FROM " + table + " "
+        # where
+        query += "WHERE " + column_code + " IN (" + codes + ")"
+        return query
+
+    def get_db_instance(self, datasource=None):
+        if datasource:
+            return get_db(get_db_datasource(self.config, datasource))
+        log.warn("Returing the default db instance: " + self.default_db)
+        return get_db(get_db_datasource(self.config, self.default_db))
+
+
 
 
 # [["BOX(60.475829 29.3772500000001,74.8898620000001 38.4906960000001)"]]
