@@ -1,4 +1,4 @@
-from geobricks_common.config.config_COMMON_IMPORT import merge_config_from_file
+# from geobricks_common.config.config_COMMON_IMPORT import merge_config_from_file
 
 import logging
 
@@ -20,8 +20,8 @@ config = {
                 "dbname": "fenix",
                 "host": "localhost",
                 "port": "5432",
-                "username": "fenix",
-                "password": "Qwaszx",
+                "username": "usr",
+                "password": "pwd",
                 "schema": "public",
                 },
 
@@ -30,4 +30,4 @@ config = {
 }
 
 # config merge with possible
-config = merge_config_from_file(config)
+# config = merge_config_from_file(config)
