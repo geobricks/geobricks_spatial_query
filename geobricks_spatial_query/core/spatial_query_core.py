@@ -13,7 +13,7 @@ class SpatialQuery():
     default_db = "spatial"
 
     def __init__(self, config):
-        self.config = config["settings"]
+        self.config = config["settings"] if "settings" in config else config
 
     def query_db(self, datasource, query, output_json=False):
         db_datasource = get_db_datasource(self.config, datasource)
@@ -71,7 +71,7 @@ class SpatialQuery():
             result = [[minlat, minlon], [maxlat, maxlon]]
         return result
 
-    def get_query_string_select_all(self, datasource, layer_code, column_code, codes, select="*"):
+    def get_query_string_select_all(self, datasource, layer_code, column_code, codes, select="*", groupby=None):
         db_datasource = get_db_datasource(self.config, datasource)
         layer = get_layer(db_datasource, layer_code)
         table = get_table(layer)
@@ -83,7 +83,11 @@ class SpatialQuery():
         # From
         query += "FROM " + table + " "
         # where
-        query += "WHERE " + column_code + " IN (" + codes + ")"
+        query += "WHERE " + column_code + " IN (" + codes + ") "
+
+        if groupby is not None:
+            query += "GROUP BY " + groupby + " "
+
         return query
 
     def get_db_instance(self, datasource=None):
@@ -127,7 +131,7 @@ def get_layer_column(layer, column_code):
         else:
             log.warn('No "' + column_code + '" in layer definition' + layer)
     else:
-        log.error('"column" it\'s not set in' + layer)
+        log.warn('"column" it\'s not set in' + layer)
     log.warn("Returning default '" + column_code + "' value for the column")
     return column_code
 
