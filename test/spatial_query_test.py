@@ -1,7 +1,11 @@
 import unittest
+import simplejson
+import requests
+from geobricks_common.core.log import logger
 from geobricks_spatial_query.config.config import config
 from geobricks_spatial_query.core.spatial_query_core import SpatialQuery
 
+log = logger(__file__)
 
 class GeobricksTest(unittest.TestCase):
 
@@ -36,6 +40,62 @@ class GeobricksTest(unittest.TestCase):
         sq = SpatialQuery(config)
         result = sq.query_srid(self.db, self.layer_table, self.column_geom)
         self.assertEqual(result, "4326")
+
+    def test_bbox_rest_with_alias(self):
+        try:
+            requests.get("http://localhost:5925/spatialquery/discovery")
+        except Exception, e:
+            log.warn("Service is down. Please run rest/distribution_main.py to run the test")
+
+        r = requests.get("http://localhost:5925/spatialquery/db/spatial/bbox/layer/country/adm0_code/1")
+        result = simplejson.loads(r.text)
+        self.assertEqual(result, [[60.475829, 38.4906960000001], [74.8898620000001, 29.3772500000001]])
+
+    def test_bbox_rest(self):
+        try:
+            requests.get("http://localhost:5925/spatialquery/discovery")
+        except Exception, e:
+            log.warn("Service is down. Please run rest/distribution_main.py to run the test")
+
+        r = requests.get("http://localhost:5925/spatialquery/db/spatial/bbox/layer/gaul0_2015_4326/adm0_code/1")
+        result = simplejson.loads(r.text)
+        self.assertEqual(result, [[60.475829, 38.4906960000001], [74.8898620000001, 29.3772500000001]])
+
+    def test_bbox_rest_to_3857(self):
+        try:
+            requests.get("http://localhost:5925/spatialquery/discovery")
+        except Exception, e:
+            log.warn("Service is down. Please run rest/distribution_main.py to run the test")
+
+        r = requests.get("http://localhost:5925/spatialquery/db/spatial/bbox/layer/gaul0_2015_4326/adm0_code/1/epsg/3857")
+        result = simplejson.loads(r.text)
+        self.assertEqual(result, [[6732138.48958109, 4648978.50570379], [8336701.30341853, 3423749.69036421]])
+
+    def test_bbox_rest_to_3857_with_alias(self):
+        try:
+            requests.get("http://localhost:5925/spatialquery/discovery")
+        except Exception, e:
+            log.warn("Service is down. Please run rest/distribution_main.py to run the test")
+
+        r = requests.get("http://localhost:5925/spatialquery/db/spatial/bbox/layer/country/adm0_code/1/epsg/3857")
+        result = simplejson.loads(r.text)
+        self.assertEqual(result, [[6732138.48958109, 4648978.50570379], [8336701.30341853, 3423749.69036421]])
+
+    def test_query(self):
+        sq = SpatialQuery(config)
+        result = sq.query_db(self.db, "select adm0_code from spatial.gaul0_2015_4326 where adm0_code = '1'")
+        result = simplejson.dumps(result)
+        self.assertEqual(result, '[[1]]')
+
+def test_query_rest(self):
+        try:
+            requests.get("http://localhost:5925/spatialquery/discovery")
+        except Exception, e:
+            log.warn("Service is down. Please run rest/distribution_main.py to run the test")
+
+        r = requests.get("http://localhost:5925/spatialquery/db/spatial/query/select adm0_code from spatial.gaul0_2015_4326 where adm0_code = '1'")
+        result = simplejson.loads(r.text)
+        self.assertEqual(result, [[1]])
 
 
 if __name__ == '__main__':

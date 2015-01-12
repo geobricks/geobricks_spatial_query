@@ -11,7 +11,7 @@ app = Flask(__name__)
 cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
 # Url blueprint prefix
-url_prefix = "/geobricks_spatialquery"
+url_prefix = "/spatialquery"
 
 # Core services.
 app.register_blueprint(spatial_query_rest.app, url_prefix=url_prefix)
