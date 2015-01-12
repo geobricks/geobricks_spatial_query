@@ -1,7 +1,3 @@
-# from geobricks_common.config.config_COMMON_IMPORT import merge_config_from_file
-
-import logging
-
 config = {
     "settings": {
         # To be used by Flask: DEVELOPMENT ONLY
@@ -11,23 +7,19 @@ config = {
         "host": "localhost",
 
         # Flask port: DEVELOPMENT ONLY
-        "port": 5904,
+        "port": 5925,
 
         "db": {
             # Spatial Database
             "spatial": {
                 # default_db will search in the dbs["database"] as default option
-                "dbname": "fenix",
+                "dbname": "db",
                 "host": "localhost",
                 "port": "5432",
                 "username": "usr",
                 "password": "pwd",
                 "schema": "public",
-                },
-
-            },
+                }
         }
+    }
 }
-
-# config merge with possible
-# config = merge_config_from_file(config)
