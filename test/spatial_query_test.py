@@ -15,16 +15,15 @@ class GeobricksTest(unittest.TestCase):
     column_code = "adm0_code"
     codes = ['1']
 
-
     def test_gaul0_2015_4326_in_4326(self):
         sq = SpatialQuery(config)
         result = sq.query_bbox(self.db, self.layer_table, self.column_code, self.codes, "4326")
-        self.assertEqual(result, [[60.475829, 38.4906960000001], [74.8898620000001, 29.3772500000001]])
+        self.assertEqual(result, [[38.4906960000001, 60.475829], [29.3772500000001, 74.8898620000001]])
 
     def test_gaul0_2015_4326_in_3857(self):
         sq = SpatialQuery(config)
         result = sq.query_bbox(self.db, self.layer_table, self.column_code, self.codes, "3857")
-        self.assertEqual(result, [[6732138.48958109, 4648978.50570379], [8336701.30341853, 3423749.69036421]])
+        self.assertEqual(result, [[4648978.50570379, 6732138.48958109], [3423749.69036421, 8336701.30341853]])
 
     def test_gaul0_2015_4326_in_4326_geojson(self):
         sq = SpatialQuery(config)
@@ -49,7 +48,7 @@ class GeobricksTest(unittest.TestCase):
 
         r = requests.get("http://localhost:5925/spatialquery/db/spatial/bbox/layer/country/adm0_code/1")
         result = simplejson.loads(r.text)
-        self.assertEqual(result, [[60.475829, 38.4906960000001], [74.8898620000001, 29.3772500000001]])
+        self.assertEqual(result, [[38.4906960000001, 60.475829], [29.3772500000001, 74.8898620000001]])
 
     def test_bbox_rest(self):
         try:
@@ -59,7 +58,7 @@ class GeobricksTest(unittest.TestCase):
 
         r = requests.get("http://localhost:5925/spatialquery/db/spatial/bbox/layer/gaul0_2015_4326/adm0_code/1")
         result = simplejson.loads(r.text)
-        self.assertEqual(result, [[60.475829, 38.4906960000001], [74.8898620000001, 29.3772500000001]])
+        self.assertEqual(result, [[38.4906960000001, 60.475829], [29.3772500000001, 74.8898620000001]])
 
     def test_bbox_rest_to_3857(self):
         try:
@@ -69,7 +68,7 @@ class GeobricksTest(unittest.TestCase):
 
         r = requests.get("http://localhost:5925/spatialquery/db/spatial/bbox/layer/gaul0_2015_4326/adm0_code/1/epsg/3857")
         result = simplejson.loads(r.text)
-        self.assertEqual(result, [[6732138.48958109, 4648978.50570379], [8336701.30341853, 3423749.69036421]])
+        self.assertEqual(result, [[4648978.50570379, 6732138.48958109], [3423749.69036421, 8336701.30341853]])
 
     def test_bbox_rest_to_3857_with_alias(self):
         try:
@@ -79,7 +78,7 @@ class GeobricksTest(unittest.TestCase):
 
         r = requests.get("http://localhost:5925/spatialquery/db/spatial/bbox/layer/country/adm0_code/1/epsg/3857")
         result = simplejson.loads(r.text)
-        self.assertEqual(result, [[6732138.48958109, 4648978.50570379], [8336701.30341853, 3423749.69036421]])
+        self.assertEqual(result, [[4648978.50570379, 6732138.48958109], [3423749.69036421, 8336701.30341853]])
 
     def test_query(self):
         sq = SpatialQuery(config)

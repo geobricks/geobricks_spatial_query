@@ -77,7 +77,8 @@ class SpatialQuery():
             minlon = result["coordinates"][0][1][1]
             maxlat = result["coordinates"][0][2][0]
             maxlon = result["coordinates"][0][0][1]
-            result = [[minlat, minlon], [maxlat, maxlon]]
+            # result = [[minlat, minlon], [maxlat, maxlon]]
+            result = [[minlon, minlat], [maxlon, maxlat]]
         return result
 
     def get_query_string_select_all(self, datasource, layer_code, column_code, codes, select="*", groupby=None):

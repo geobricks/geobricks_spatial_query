@@ -89,3 +89,16 @@ def rest_query_bbox_epsg(datasource, layer_code, column_code, codes, epsg):
         raise Exception(e)
 
 
+# @app.route('/db/<datasource>/query/layer/<layer_code>/select/<select_codes>/', methods=['GET'])
+# @app.route('/db/<datasource>/query/layer/<layer_code>/select/<select_codes>', methods=['GET'])
+# @cross_origin(origins='*', headers=['Content-Type'])
+# def rest_query_bbox_epsg(datasource, layer_code, column_code, codes, epsg):
+#     try:
+#         sq = SpatialQuery(config)
+#         codes = codes.split(",")
+#         result = sq.query_bbox(datasource, layer_code, column_code, codes, epsg)
+#         return Response(simplejson.dumps(result), content_type='application/json; charset=utf-8')
+#     except Exception, e:
+#         log.error(e)
+#         raise Exception(e)
+
