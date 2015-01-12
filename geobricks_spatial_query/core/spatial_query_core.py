@@ -135,7 +135,6 @@ def get_table(layer, schema=None):
         table = layer["table"]
     else:
         log.warn('No "table" in layer definition, passing as table %s' % layer)
-
     if isinstance(layer, basestring):
         if schema is not None and not table.startswith(schema):
             table = schema + "." + table
