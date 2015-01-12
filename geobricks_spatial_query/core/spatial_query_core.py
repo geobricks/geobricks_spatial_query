@@ -131,7 +131,6 @@ def get_table(layer, schema=None):
 
     if isinstance(layer, basestring):
         if schema is not None and not table.startswith(schema):
-            print schema
             table = schema + "." + table
     log.info('The table to search : ' + table)
     return table
