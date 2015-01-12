@@ -22,6 +22,7 @@ def root():
     """
     return 'Welcome to Geobricks SpatialQuery!'
 
+
 @app.route('/discovery/')
 @app.route('/discovery')
 @cross_origin(origins='*')
