@@ -6,7 +6,7 @@ from geobricks_spatial_query.core.spatial_query_core import SpatialQuery
 class GeobricksTest(unittest.TestCase):
 
     db = "spatial"
-    layer_table = "gaul0_2015_4326"
+    layer_table = "gaul0_2015_4326" # use 'country' for alias test (if mapped)
     column_geom = "geom"
     column_code = "adm0_code"
     codes = ['1']

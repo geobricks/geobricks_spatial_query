@@ -18,17 +18,24 @@ class SpatialQuery():
     def query_db(self, datasource, query, output_json=False):
         db_datasource = get_db_datasource(self.config, datasource)
         db = get_db(db_datasource)
-        log.info(query)
         return db.query(query, output_json)
 
-    def query_srid(self, datasource, table, geom_column):
+    def query_srid(self, datasource, layer_code, geom_column=None):
+        # TODO: implement a function that returns all the info in sequence (it's the same as query_bbox)
+        db_datasource = get_db_datasource(self.config, datasource)
+        schema = db_datasource["schema"] if "schema" in db_datasource else None
+        layer = get_layer(db_datasource, layer_code)
+        table = get_table(layer, schema)
+        if geom_column is None:
+            geom_column = get_layer_column_geom(layer)
+        # TODO: untill here
+
         srid = self.query_db(datasource, "SELECT ST_SRID(" + geom_column + ") FROM " + table + " LIMIT 1")
         return str(srid[0][0])
 
     def query_bbox(self, datasource, layer_code, column_code, codes, epsg="4326", output_type="bbox"):
         db_datasource = get_db_datasource(self.config, datasource)
         schema = db_datasource["schema"] if "schema" in db_datasource else None
-        log.info(schema)
         layer = get_layer(db_datasource, layer_code)
         table = get_table(layer, schema)
         geom_column = get_layer_column_geom(layer)
@@ -75,9 +82,8 @@ class SpatialQuery():
 
     def get_query_string_select_all(self, datasource, layer_code, column_code, codes, select="*", groupby=None):
         db_datasource = get_db_datasource(self.config, datasource)
-        layer = get_layer(db_datasource, layer_code)
         schema = db_datasource["schema"] if "schema" in db_datasource else None
-        log.info(schema)
+        layer = get_layer(db_datasource, layer_code)
         table = get_table(layer, schema)
         column_code = get_layer_column(layer, column_code)
         codes = parse_codes(codes)
@@ -118,7 +124,7 @@ def get_layer(db_datasource, layer_code):
     if "tables" in db_datasource:
         if layer_code in db_datasource["tables"]:
             return db_datasource["tables"][layer_code]
-    log.warn("layer code not mapped, returning the passed layer_code:" + layer_code)
+    log.warn("layer code not mapped, returning the passed layer_code: %s" % layer_code)
     return layer_code
 
 
@@ -127,7 +133,7 @@ def get_table(layer, schema=None):
     if "table" in layer:
         table = layer["table"]
     else:
-        log.warn('No "table" in layer definition, passing as table' + layer)
+        log.warn('No "table" in layer definition, passing as table %s' % layer)
 
     if isinstance(layer, basestring):
         if schema is not None and not table.startswith(schema):
@@ -145,9 +151,9 @@ def get_layer_column(layer, column_code):
         if column_code in layer["column"]:
             return layer["column"][column_code]
         else:
-            log.warn('No "' + column_code + '" in layer definition' + layer)
+            log.warn('No "' + column_code + '" in layer definition %s' % layer)
     else:
-        log.warn('"column" it\'s not set in' + layer)
+        log.warn('"column" it\'s not set in %s' % layer)
     log.warn("Returning default '" + column_code + "' value for the column")
     return column_code
 
