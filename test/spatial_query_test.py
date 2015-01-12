@@ -87,7 +87,7 @@ class GeobricksTest(unittest.TestCase):
         result = simplejson.dumps(result)
         self.assertEqual(result, '[[1]]')
 
-def test_query_rest(self):
+    def test_query_rest(self):
         try:
             requests.get("http://localhost:5925/spatialquery/discovery")
         except Exception, e:
