@@ -27,8 +27,10 @@ class SpatialQuery():
 
     def query_bbox(self, datasource, layer_code, column_code, codes, epsg="4326", output_type="bbox"):
         db_datasource = get_db_datasource(self.config, datasource)
+        schema = db_datasource["schema"] if "schema" in db_datasource else None
+        log.info(schema)
         layer = get_layer(db_datasource, layer_code)
-        table = get_table(layer)
+        table = get_table(layer, schema)
         geom_column = get_layer_column_geom(layer)
         column_code = get_layer_column(layer, column_code)
         srid = self.query_srid(datasource, table, geom_column)
@@ -74,7 +76,9 @@ class SpatialQuery():
     def get_query_string_select_all(self, datasource, layer_code, column_code, codes, select="*", groupby=None):
         db_datasource = get_db_datasource(self.config, datasource)
         layer = get_layer(db_datasource, layer_code)
-        table = get_table(layer)
+        schema = db_datasource["schema"] if "schema" in db_datasource else None
+        log.info(schema)
+        table = get_table(layer, schema)
         column_code = get_layer_column(layer, column_code)
         codes = parse_codes(codes)
 
@@ -109,6 +113,7 @@ def get_db_datasource(config, datasource):
 def get_db(db_datasource):
     return DBMSPostgreSQL(db_datasource)
 
+
 def get_layer(db_datasource, layer_code):
     if "tables" in db_datasource:
         if layer_code in db_datasource["tables"]:
@@ -117,11 +122,23 @@ def get_layer(db_datasource, layer_code):
     return layer_code
 
 
-def get_table(layer):
+def get_table(layer, schema=None):
+    table = layer if isinstance(layer, basestring) else ""
     if "table" in layer:
-        return layer["table"]
-    log.warn('No "table" in layer definition, passing as table' + layer)
-    return layer
+        table = layer["table"]
+    else:
+        log.warn('No "table" in layer definition, passing as table' + layer)
+
+    if isinstance(layer, basestring):
+        if schema is not None and not table.startswith(schema):
+            print schema
+            table = schema + "." + table
+    log.info('The table to search : ' + table)
+    return table
+    # if "table" in layer:
+    #     return layer["table"]
+    # log.warn('No "table" in layer definition, passing as table' + layer)
+    # return layer
 
 
 def get_layer_column(layer, column_code):
