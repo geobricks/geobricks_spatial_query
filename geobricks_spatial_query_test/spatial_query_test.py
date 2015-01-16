@@ -96,10 +96,13 @@ class GeobricksTest(unittest.TestCase):
         result = simplejson.loads(r.text)
         self.assertEqual(result, [[1]])
 
-
-if __name__ == '__main__':
+def run_tests():
     suite = unittest.TestLoader().loadTestsFromTestCase(GeobricksTest)
     unittest.TextTestRunner(verbosity=2).run(suite)
+
+
+if __name__ == '__main__':
+    run_tests()
 
 
 
