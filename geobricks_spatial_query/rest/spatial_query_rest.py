@@ -54,7 +54,8 @@ def rest_query_db(datasource, query):
     # it should be replaced if the query contains {{SCHEMA}} or something like that
     try:
         sq = SpatialQuery(config)
-        result = sq.query_db(datasource, query)
+        geojson_encoding = request.args.get('geojsonEncoding')
+        result = sq.query_db(datasource, query, False, geojson_encoding)
         return Response(simplejson.dumps(result), content_type='application/json; charset=utf-8')
     except Exception, e:
         log.error(e)
