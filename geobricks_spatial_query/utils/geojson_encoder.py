@@ -4,13 +4,14 @@ from json import loads, dumps, JSONEncoder
 from optparse import OptionParser
 from re import compile
 import encode_postgis
+import simplejson
 float_pat = compile(r'^-?\d+\.\d+(e-?\d+)?$')
 charfloat_pat = compile(r'^[\[,\,]-?\d+\.\d+(e-?\d+)?$')
 
 #input = { "type": "FeatureCollection","features": [{ "type": "Feature",                  "geometry": {                      "type": "Polygon",                      "coordinates": [                          [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],                            [100.0, 1.0], [100.0, 0.0] ]                      ]                  },                  "properties": {                      "prop0": "value0",                      "prop1": {"this": "that"}                  }                }            ]}
 input = { "type": "FeatureCollection",            "features": [                { "type": "Feature",                  "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},                 "properties": {"prop0": "value0"}                },                { "type": "Feature",                  "geometry": {                      "type": "LineString",                      "coordinates": [                          [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]                      ]                  },                  "properties": {                      "prop0": "value0",                      "prop1": 0.0                  }                },                { "type": "Feature",                  "geometry": {                      "type": "Polygon",                      "coordinates": [                          [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],                            [100.0, 1.0], [100.0, 0.0] ]                      ]                  },                  "properties": {                      "prop0": "value0",                      "prop1": {"this": "that"}                  }                }            ]}
 data = dumps(input)
-print data
+#print data
 #data = loads(data)
 #print data
 #
@@ -35,7 +36,91 @@ char_lat = True
 
 
 def encode_geojson(r):
-    out_file = open("html/data/encode_geojson.geojson", "wb")
+    output = {}
+    output["type"] = "FeatureCollection"
+    output["features"] = []
+    for v in r:
+        j = loads(v[0])
+        f = {}
+        f["type"] = "Feature"
+        f["geometry"] = {}
+        f["geometry"]["type"] = j["type"]
+        f["geometry"]["coordinates"] = encode_postgis._encode_geometry(j)
+        f["properties"] = {}
+        for p in range(1, len(v)):
+            f["properties"]["prop" + str(p)] = v[p]
+        output["features"].append(f)
+    print output
+    return output
+
+
+# def encode_geojson(rows):
+#     db_settings = {}
+#     db_settings["dbname"] = "fenix"
+#     db_settings["password"] = "Qwaszx"
+#     db_settings["username"] = "fenix"
+#     db = DBMSPostgreSQL(db_settings)
+#
+#     rows = db.query("select ST_AsGeoJSON(geom) as geom, adm0_code as code, adm0_name as name from spatial.gaul0_2015_4326 where adm0_name IN ('Malta', 'Italy')")
+#
+#     print "----------------"
+#     # print rows
+#     rows = simplejson.loads(simplejson.dumps(rows))
+#     print rows
+#
+#     for i in range(0, len(rows)):
+#         print rows[i]
+#         for j in range(0, len(rows[i])):
+#             if j == 0:
+#                 print "here"
+#                 encoding = encode_postgis._encode_geometry(simplejson.loads(rows[i][j]))
+#                 print rows[i][j]
+#                 rows[i][j] = simplejson.loads(rows[i][j])
+#                 print rows[i][j]
+#                 rows[i][j]["coordinates"] = encoding
+#                 print rows[i][j]
+#             else:
+#                 print "else"
+#                 print rows[i][0]
+#                 if "properties" in rows[i][0]:
+#                     print "DAJE"
+#                 else:
+#                     rows[i][0]["properties"] = {}
+#                 rows[i][0]["properties"]["prop" + str(j-1)] = str(rows[i][j])
+#
+#     print "----------------"
+#     output = {"type" : "FeatureCollection",
+#               "features": []
+#     }
+#     for r in rows:
+#         output["features"].append(r[0])
+#     # print len(rows)
+#     # print rows[0][0]
+#     # print rows[1][0]
+#     print output
+#     return output
+#     # for r in rows:
+#     #     index = 0
+#     #     for v in r:
+#     #         # print v
+#     #         if index == 0:
+#     #             encoding = encode_postgis._encode_geometry(simplejson.loads(v))
+#     #             # print encoding
+#     #             v = simplejson.loads(v)
+#     #             # print v["coordinates"]
+#     #             v["coordinates"] = encoding
+#     #             # print v["coordinates"]
+#     #
+#     #         index += 1
+#     # print "-------"
+#     # print rows
+#     # return output
+
+
+#encode_geojson("Ad")
+
+def encode_geojson_to_file(r):
+    out_file = open("/home/vortex/Desktop/encode_geojson.geojson", "wb")
     out_file.write('{"type":"FeatureCollection","features":[')
     index = 0
     for v in r:
@@ -78,7 +163,7 @@ def query_geojson():
     #r = db.query("select ST_AsGeoJSON(geom), iso2, faost_n from gaul0_4326 where faost_n IN ('Malta','Italy')")
     #geojson = {"type": "FeatureCollection", "features": []}
 
-    r = db.query("select ST_AsGeoJSON(ST_SimplifyPreserveTopology(geom, 0.04)), adm0_code, adm0_name from spatial.gaul0_2015_4326 where adm0_name IN ('Italy', 'Spain', 'France', 'Nigeria')")
+    r = db.query("select ST_AsGeoJSON(ST_SimplifyPreserveTopology(geom, 0.04)), adm0_code, adm0_name from spatial.gaul0_2015_4326 where adm0_name IN ('Italy')")
 
 
     print "doing geojson"
@@ -106,7 +191,7 @@ def query_geojson():
     out_file.close()
 
 # load geojson
-query_geojson()
+#query_geojson()
 
 #print input
 # for token in encoded:
