@@ -13,19 +13,13 @@ config = {
             # Spatial Database
             "spatial": {
                 # default_db will search in the dbs["database"] as default option
-                "dbname": "fenix",
+                "dbname": "db",
                 "host": "localhost",
                 "port": "5432",
-                "username": "fenix",
-                "password": "Qwaszx",
-                "schema": "spatial",
-
-                "tables": {
-                    "country": {
-                        "table": "gaul0_2015_4326"
-                    }
+                "username": "usr",
+                "password": "pwd",
+                "schema": "public",
                 }
-            }
         }
     }
 }
