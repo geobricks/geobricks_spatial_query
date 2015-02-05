@@ -1,6 +1,7 @@
 import simplejson
 from geobricks_common.core.log import logger
 from geobricks_dbms.core.dbms_postgresql import DBMSPostgreSQL
+from geobricks_spatial_query.utils.geojson import encode_geojson
 
 
 log = logger(__file__)
@@ -15,10 +16,13 @@ class SpatialQuery():
     def __init__(self, config):
         self.config = config["settings"] if "settings" in config else config
 
-    def query_db(self, datasource, query, output_json=False):
+    def query_db(self, datasource, query, output_json=False, geojson_encoding=None):
         db_datasource = get_db_datasource(self.config, datasource)
         db = get_db(db_datasource)
-        return db.query(query, output_json)
+        result = db.query(query, output_json)
+        if geojson_encoding:
+            result = encode_geojson(result)
+        return result
 
     def query_srid(self, datasource, layer_code, geom_column=None):
         # TODO: implement a function that returns all the info in sequence (it's the same as query_bbox)
