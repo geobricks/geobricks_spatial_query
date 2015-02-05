@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name='GeobricksSpatialQuery',
-    version='0.0.4',
+    version='0.0.5',
     author='Simone Murzilli; Guido Barbaglia',
     author_email='geobrickspy@gmail.com',
     packages=find_packages(),
