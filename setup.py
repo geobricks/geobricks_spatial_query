@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name='GeobricksSpatialQuery',
-    version='0.0.6',
+    version='0.0.7',
     author='Simone Murzilli; Guido Barbaglia',
     author_email='geobrickspy@gmail.com',
     packages=find_packages(),
@@ -14,6 +14,7 @@ setup(
         'flask',
         'flask-cors',
         'simplejson',
+        'pyproj',
         'Geobrickscommon',
         'GeobricksDBMS'
     ],
