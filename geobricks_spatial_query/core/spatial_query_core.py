@@ -67,7 +67,7 @@ class SpatialQuery():
         db = DBMSPostgreSQL(db_datasource)
         log.info(query)
         result = db.query(query)
-        log.info(result)
+        # log.info(result)
 
         # different kind of result based on the request
         if output_type == "geojson":
@@ -97,8 +97,11 @@ class SpatialQuery():
         query = "SELECT  " + select + " "
         # From
         query += "FROM " + table + " "
+
         # where
-        query += "WHERE " + column_code + " IN (" + codes + ") "
+        if column_code:
+            if codes:
+                query += "WHERE " + column_code + " IN (" + codes + ") "
 
         if groupby is not None:
             query += "GROUP BY " + groupby + " "
@@ -151,14 +154,15 @@ def get_table(layer, schema=None):
 
 
 def get_layer_column(layer, column_code):
-    if "column" in layer:
-        if column_code in layer["column"]:
-            return layer["column"][column_code]
+    if column_code:
+        if "column" in layer:
+            if column_code in layer["column"]:
+                return layer["column"][column_code]
+            else:
+                log.warn('No "' + column_code + '" in layer definition %s' % layer)
         else:
-            log.warn('No "' + column_code + '" in layer definition %s' % layer)
-    else:
-        log.warn('"column" it\'s not set in %s' % layer)
-    log.warn("Returning default '" + column_code + "' value for the column")
+            log.warn('"column" it\'s not set in %s' % layer)
+        log.warn("Returning default '" + column_code + "' value for the column")
     return column_code
 
 
@@ -176,10 +180,12 @@ def get_layer_srid(layer):
 
 
 def parse_codes(codes, is_string=True):
-    codes_string = ""
-    for c in codes:
-        codes_string += "'"+str(c)+"'," if is_string else str(c)+","
-    return codes_string[:-1]
+    codes_string = None
+    if codes:
+        codes_string = ""
+        for c in codes:
+            codes_string += "'"+str(c)+"'," if is_string else str(c)+","
+    return codes_string[:-1] if codes_string else None
 
 
 
