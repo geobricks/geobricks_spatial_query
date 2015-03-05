@@ -62,6 +62,7 @@ def rest_query_db(datasource, query):
         raise Exception(e)
 
 
+# BBox REST Services
 @app.route('/db/<datasource>/bbox/layer/<layer_code>/<column_code>/<codes>/', methods=['GET'])
 @app.route('/db/<datasource>/bbox/layer/<layer_code>/<column_code>/<codes>', methods=['GET'])
 @cross_origin(origins='*', headers=['Content-Type'])
@@ -84,6 +85,36 @@ def rest_query_bbox_epsg(datasource, layer_code, column_code, codes, epsg):
         sq = SpatialQuery(config)
         codes = codes.split(",")
         result = sq.query_bbox(datasource, layer_code, column_code, codes, epsg)
+        return Response(simplejson.dumps(result), content_type='application/json; charset=utf-8')
+    except Exception, e:
+        log.error(e)
+        raise Exception(e)
+
+
+# Centroids REST Services
+@app.route('/db/<datasource>/centroid/layer/<layer_code>/<column_code>/<codes>/', methods=['GET'])
+@app.route('/db/<datasource>/centroid/layer/<layer_code>/<column_code>/<codes>', methods=['GET'])
+@cross_origin(origins='*', headers=['Content-Type'])
+def rest_query_centroid(datasource, layer_code, column_code, codes):
+    try:
+        sq = SpatialQuery(config)
+        codes = codes.split(",")
+        result = sq.query_centroid(datasource, layer_code, column_code, codes)
+        return Response(simplejson.dumps(result), content_type='application/json; charset=utf-8')
+    except Exception, e:
+        log.error(e)
+        raise Exception(e)
+
+
+@app.route('/db/<datasource>/centroid/layer/<layer_code>/<column_code>/<codes>/labels/<column_label_codes>/', methods=['GET'])
+@app.route('/db/<datasource>/centroid/layer/<layer_code>/<column_code>/<codes>/labels/<column_label_codes>', methods=['GET'])
+@cross_origin(origins='*', headers=['Content-Type'])
+def rest_query_centroid_epsg(datasource, layer_code, column_code, codes, column_label_codes):
+    try:
+        sq = SpatialQuery(config)
+        codes = codes.split(",")
+        column_label_codes = column_label_codes.split(",")
+        result = sq.query_centroid(datasource, layer_code, column_code, codes, "4326", column_label_codes)
         return Response(simplejson.dumps(result), content_type='application/json; charset=utf-8')
     except Exception, e:
         log.error(e)

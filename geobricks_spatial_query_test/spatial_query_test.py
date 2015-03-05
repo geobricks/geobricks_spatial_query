@@ -13,6 +13,7 @@ class GeobricksTest(unittest.TestCase):
     layer_table = "gaul0_2015_4326" # use 'country' for alias test (if mapped)
     column_geom = "geom"
     column_code = "adm0_code"
+    column_label = ["adm0_code", "adm0_name"]
     codes = ['1']
 
     def test_gaul0_2015_4326_in_4326(self):
@@ -95,6 +96,35 @@ class GeobricksTest(unittest.TestCase):
         r = requests.get("http://localhost:5925/spatialquery/db/spatial/query/select adm0_code from spatial.gaul0_2015_4326 where adm0_code = '1'")
         result = simplejson.loads(r.text)
         self.assertEqual(result, [[1]])
+
+    # Centroids
+    def test_centroid(self):
+        sq = SpatialQuery(config)
+        # result = sq.query_centroid(self.db, self.layer_table, self.column_code, self.codes, "4326", None, "geojson")
+        result = sq.query_centroid(self.db, self.layer_table, self.column_code, self.codes, "4326", self.column_label, "geojson")
+        print result
+        self.assertEqual(result, {'type': 'FeatureCollection', 'features': [{'geometry': {'type': 'Point', 'coordinates': [66.0267523837735, 33.8315426081808]}, 'type': 'Feature', 'properties': {'prop0': 1, 'prop1': 'Afghanistan'}}]})
+
+    def test_centroid_rest(self):
+        try:
+            requests.get("http://localhost:5925/spatialquery/discovery")
+        except Exception, e:
+            log.warn("Service is down. Please run rest/distribution_main.py to run the test")
+
+        r = requests.get("http://localhost:5925/spatialquery/db/spatial/centroid/layer/gaul0_2015_4326/adm0_code/1")
+        result = simplejson.loads(r.text)
+        self.assertEqual(result, {"type": "FeatureCollection", "features": [{"geometry": {"type": "Point", "coordinates": [66.0267523837735, 33.8315426081808]}, "type": "Feature", "properties": {"prop0": 1}}]})
+
+    def test_centroid_with_labels_rest(self):
+        try:
+            requests.get("http://localhost:5925/spatialquery/discovery")
+        except Exception, e:
+            log.warn("Service is down. Please run rest/distribution_main.py to run the test")
+
+        r = requests.get("http://localhost:5925/spatialquery/db/spatial/centroid/layer/gaul0_2015_4326/adm0_code/1/labels/adm0_code,adm0_name")
+        result = simplejson.loads(r.text)
+        self.assertEqual(result, {'type': 'FeatureCollection', 'features': [{'geometry': {'type': 'Point', 'coordinates': [66.0267523837735, 33.8315426081808]}, 'type': 'Feature', 'properties': {'prop0': 1, 'prop1': 'Afghanistan'}}]})
+
 
 def run_test():
     suite = unittest.TestLoader().loadTestsFromTestCase(GeobricksTest)
