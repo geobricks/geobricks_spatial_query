@@ -1,4 +1,8 @@
 include *.md *.txt *.json
 recursive-include geobricks_spatial_query *
+recursive-exclude geobricks_spatial_query_test *
+recursive-exclude test_data *
+recursive-exclude examples *
+recursive-exclude dist *
 global-exclude *_dev.py
 global-exclude .gitignore
