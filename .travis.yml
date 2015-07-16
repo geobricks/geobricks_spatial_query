@@ -6,7 +6,8 @@ addons:
   postgresql: "9.3"
 
 before_script:
-  - psql -c "CREATE USER spatialuser WITH PASSWORD 'spatial';" -U postgres
+  - cp config/database.yml.travis config/database.yml
+#  - psql -c "CREATE USER spatialuser WITH PASSWORD 'spatial';" -U postgres
   - psql -c "CREATE DATABASE spatialdbtest ENCODING 'utf-8';" -U spatialuser
   - psql -c 'CREATE EXTENSION postgis;' -U spatialuser -d spatialdbtest
   - psql -c "CREATE SCHEMA spatial;" -U spatialuser -d spatialdbtest
