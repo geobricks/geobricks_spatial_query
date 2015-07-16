@@ -16,8 +16,8 @@ config = {
                 "dbname": "spatialdbtest",
                 "host": "localhost",
                 "port": "5432",
-                "username": "spatialuser",
-                "password": "spatial",
+                "username": "postgres",
+                "password": "",
                 "schema": "spatial",
                 "tables": {
                     "country": {
