@@ -16,7 +16,7 @@ setup(
         'flask-cors',
         'simplejson',
         'pyproj',
-        'Geobrickscommon',
+        'GeobricksCommon',
         'GeobricksDBMS'
     ],
     url='http://pypi.python.org/pypi/GeobricksSpatialQuery/',

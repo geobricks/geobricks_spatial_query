@@ -1,0 +1,23 @@
+language: python
+python:
+  - "2.7"
+
+  psql -c "CREATE USER skateparks WITH PASSWORD 'skateparks';" -U postgres
+
+addons:
+  postgresql: "9.1"
+
+before_script:
+  - psql -c "CREATE USER spatialuser WITH PASSWORD 'spatial';" -U postgres
+  - psql -c "CREATE DATABASE spatialdbtest;" -U spatialuser
+  - psql -c "CREATE SCHEMA spatial" -U spatialuser
+  - shp2pgsql
+
+install:
+  - "pip install -r requirements.txt"
+  - "pip install pytest pytest-cov"
+  - "pip install coveralls"
+  - "pip install -e ."   # install package using setup.py in editable mode
+
+script:
+   - py.test --cov geobricks_geocoding --cov-report term-missing
