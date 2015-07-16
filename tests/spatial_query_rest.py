@@ -22,16 +22,6 @@ class GeobricksTest(unittest.TestCase):
         self.app.register_blueprint(app, url_prefix='/spatialquery')
         self.tester = self.app.test_client(self)
 
-    # def test_discovery(self):
-    #     response = self.tester.get('/geocoding/discovery/', content_type='application/json')
-    #     out = json.loads(response.data)
-    #     self.assertEquals(out['name'], 'Geocoding service')
-    #
-    # def test_find_geocoding(self):
-    #     response = self.tester.get('/geocoding/place/Rome', content_type='application/json')
-    #     location = json.loads(response.data)
-    #     self.assertEqual(location, [[41.8933439, 12.4830718]])
-
     def test_bbox_rest_with_alias(self):
         response = self.tester.get('/spatialquery/db/spatial/bbox/layer/country/iso_a2/AF', content_type='application/json')
         result = json.loads(response.data)
