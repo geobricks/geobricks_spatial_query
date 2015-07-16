@@ -1,0 +1,7 @@
+watchdog
+flask
+flask-cors
+simplejson
+pyproj
+https://github.com/geobricks/geobricks_common/archive/development.zip
+https://github.com/geobricks/geobricks_dbms/archive/development.zip
