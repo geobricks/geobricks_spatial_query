@@ -11,13 +11,13 @@ setup(
     long_description=open('README.md').read(),
     description='Geobricks library to handle spatial queries.',
     install_requires=[
-        'watchdog',
-        'flask',
-        'flask-cors',
-        'simplejson',
-        'pyproj',
-        'Geobrickscommon',
-        'GeobricksDBMS'
+        # 'watchdog',
+        # 'flask',
+        # 'flask-cors',
+        # 'simplejson',
+        # 'pyproj',
+        # 'GeobricksCommon',
+        # 'GeobricksDBMS'
     ],
     url='http://pypi.python.org/pypi/GeobricksSpatialQuery/',
     keywords=['geobricks', 'postgis', 'gis', 'statistics', 'geostatistics', 'spatial', 'spatial query']

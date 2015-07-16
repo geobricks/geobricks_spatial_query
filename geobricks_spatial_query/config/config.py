@@ -13,13 +13,18 @@ config = {
             # Spatial Database
             "spatial": {
                 # default_db will search in the dbs["database"] as default option
-                "dbname": "db",
+                "dbname": "spatialdbtest",
                 "host": "localhost",
                 "port": "5432",
-                "username": "usr",
-                "password": "pwd",
-                "schema": "public",
+                "username": "postgres",
+                "password": "",
+                "schema": "spatial",
+                "tables": {
+                    "country": {
+                        "table": "ne_110m_admin_0_countries"
+                    }
                 }
+            }
         }
     }
 }

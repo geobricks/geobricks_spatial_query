@@ -20,6 +20,11 @@ app.register_blueprint(spatial_query_rest.app, url_prefix=url_prefix)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
 
+
+def run_rest_engine():
+    app.run(host=config['settings']['host'], port=config['settings']['port'], debug=config['settings']['debug'], threaded=True)
+
 # Start Flask server
 if __name__ == '__main__':
-    app.run(host=config['settings']['host'], port=config['settings']['port'], debug=config['settings']['debug'], threaded=True)
+    # run REST engine
+    run_rest_engine()
