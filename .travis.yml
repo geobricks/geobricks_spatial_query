@@ -2,22 +2,20 @@ language: python
 python:
   - "2.7"
 
-  psql -c "CREATE USER skateparks WITH PASSWORD 'skateparks';" -U postgres
-
 addons:
-  postgresql: "9.1"
+  postgresql: "9.3"
 
 before_script:
   - psql -c "CREATE USER spatialuser WITH PASSWORD 'spatial';" -U postgres
   - psql -c "CREATE DATABASE spatialdbtest;" -U spatialuser
   - psql -c "CREATE SCHEMA spatial" -U spatialuser
-  - shp2pgsql
+  - shp2pgsql -W LATIN1 -I -s 4326 scripts/shp/ne_110m_admin_0_countries.shp spatial.ne_110m_admin_0_countries | psql -U spatialuser spatialdbtest
 
 install:
-  - "pip install -r requirements.txt"
+#  - "pip install -r requirements.txt"
   - "pip install pytest pytest-cov"
   - "pip install coveralls"
   - "pip install -e ."   # install package using setup.py in editable mode
 
 script:
-   - py.test --cov geobricks_geocoding --cov-report term-missing
+   - py.test --cov geobricks_spatial_query --cov-report term-missing
