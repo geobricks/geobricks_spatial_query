@@ -1,9 +1,7 @@
 import unittest
 import json
-import simplejson
 from flask import Flask
 from geobricks_common.core.log import logger
-from geobricks_spatial_query.config.config import config
 from geobricks_spatial_query.rest.spatial_query_rest import app
 
 log = logger(__file__)
@@ -59,7 +57,6 @@ class GeobricksTest(unittest.TestCase):
 def run_test():
     suite = unittest.TestLoader().loadTestsFromTestCase(GeobricksTest)
     unittest.TextTestRunner(verbosity=2).run(suite)
-
 
 if __name__ == '__main__':
     run_test()

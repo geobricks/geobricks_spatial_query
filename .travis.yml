@@ -10,14 +10,14 @@ before_script:
   - psql -c "CREATE SCHEMA spatial;" -U postgres
   - psql -c "create extension postgis" -U postgres -d spatialdbtest
   - psql -f tests/data/test_data.sql -U postgres -d spatialdbtest
-  
+
 install:
   - "pip install -r https://raw.githubusercontent.com/geobricks/geobricks_common/development/requirements.txt"
   - "pip install -r https://raw.githubusercontent.com/geobricks/geobricks_dbms/development/requirements.txt"
   - "pip install -r requirements.txt"
   - "pip install pytest pytest-cov"
   - "pip install coveralls"
-  - "pip install -e ."   # install package using setup.py in editable mode
+  - "pip install -e ."  # install package using setup.py in editable mode
 
 script:
    - py.test --cov geobricks_spatial_query --cov-report term-missing
