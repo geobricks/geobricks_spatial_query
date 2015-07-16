@@ -1,4 +1,4 @@
 test:
   adapter: postgresql
-  database: spatialdb
+  database: spatialdbtest
   username: spatialuser
