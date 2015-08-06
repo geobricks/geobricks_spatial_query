@@ -9,11 +9,8 @@ log = logger(__file__)
 
 class SpatialQuery():
 
-    # default settings
-    config = None
-    default_db = "spatial"
-
     def __init__(self, config):
+        self.defauld_db = "spatial"
         self.config = config["settings"] if "settings" in config else config
 
     def query_db(self, datasource, query, output_json=False, geojson_encoding=None):
